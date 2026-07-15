@@ -4,6 +4,7 @@ import { ApiError, request } from "./http-client";
 const userKey = "redflags.userEmail";
 const accessKey = "redflags.accessToken";
 const refreshKey = "redflags.refreshToken";
+const roleKey = "redflags.userRole";
 
 type LoginResponse = User & {
   accessToken?: string;
@@ -30,6 +31,8 @@ export const authSession = {
   saveLogin(response: LoginResponse) {
     const user = response.user ?? response;
     localStorage.setItem(userKey, user.email);
+    if (user.role) localStorage.setItem(roleKey, user.role);
+    else localStorage.removeItem(roleKey);
     const token = access(response),
       renewal = refresh(response);
     if (token) localStorage.setItem(accessKey, token);
@@ -39,6 +42,7 @@ export const authSession = {
     localStorage.removeItem(userKey);
     localStorage.removeItem(accessKey);
     localStorage.removeItem(refreshKey);
+    localStorage.removeItem(roleKey);
   },
   isAuthenticated() {
     return Boolean(
@@ -47,6 +51,15 @@ export const authSession = {
   },
   getAccessToken() {
     return localStorage.getItem(accessKey);
+  },
+  getEmail() {
+    return localStorage.getItem(userKey);
+  },
+  getRole() {
+    return localStorage.getItem(roleKey);
+  },
+  isAdmin() {
+    return this.getRole() === "admin";
   },
   async refreshIfAvailable() {
     const token = localStorage.getItem(refreshKey);

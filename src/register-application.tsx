@@ -1,8 +1,9 @@
 import { Link, Route, Routes, useLocation } from "react-router-dom";
-import { ProtectedRoute } from "./components/protected-route";
+import { ProtectedRoute, AdminRoute } from "./components/protected-route";
 import { AuthLoginPage } from "./pages/auth-login-page";
 import { TinderDiscoveryPage as DiscoveryPage } from "./pages/tinder-discovery-page";
 import { ModernProfilePage as ProfilePage } from "./pages/modern-profile-page";
+import { AdminAnalyticsPage } from "./pages/admin-analytics-page";
 import { LanguageSwitcher } from "./components/language-switcher";
 import { authSession } from "./services/auth-session";
 import { useLanguage } from "./i18n";
@@ -14,9 +15,10 @@ function Shell({ children }: { children: React.ReactNode }) {
   const connected = authSession.isAuthenticated();
   const links = connected
     ? [
-        ["/discover", "Discover"],
-        ["/profile", "My profile"],
-      ]
+      ["/discover", "Discover"],
+      ["/profile", "My profile"],
+      ...(authSession.isAdmin() ? [["/admin", "Admin"]] : []),
+    ]
     : [["/register", "Register"]];
   function disconnect() {
     authSession.clear();
@@ -78,6 +80,14 @@ export default function App() {
             <ProtectedRoute>
               <ProfilePage />
             </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin"
+          element={
+            <AdminRoute>
+              <AdminAnalyticsPage />
+            </AdminRoute>
           }
         />
         <Route

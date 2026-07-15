@@ -20,6 +20,7 @@ export interface User {
   preferences: UserPreferences;
   bio: string;
   images: string[];
+  role?: "admin" | "user";
 }
 export interface Profile {
   id: string;
@@ -49,4 +50,28 @@ export interface Message {
   text?: string;
   mediaUrl?: string;
   createdAt?: string;
+}
+export interface AdminAnalytics {
+  totalUsers: number;
+  totalMatches: number;
+  totalSwipes: number;
+  totalLikes: number;
+  totalDislikes: number;
+  matchRate: number;
+  totalMessages: number;
+  totalReports: number;
+  newUsersLast7Days: number;
+  activeUsersLast7Days: number;
+}
+export interface AdminMatchUser {
+  id: string;
+  name: string;
+  email: string;
+}
+export interface AdminMatch {
+  id: string;
+  userA: AdminMatchUser;
+  userB: AdminMatchUser;
+  matchedAt: string;
+  messageCount?: number;
 }

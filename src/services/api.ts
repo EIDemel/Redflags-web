@@ -1,4 +1,4 @@
-import type { Message, Profile, ProfilesQuery, User } from "../types/api";
+import type { Message, Profile, ProfilesQuery, User, AdminAnalytics, AdminMatch } from "../types/api";
 import { request } from "./http-client";
 export const api = {
   health: () => request<string>("/"),
@@ -54,4 +54,8 @@ export const api = {
     images.forEach((x) => body.append("images", x));
     return request<string[]>("/uploads", { method: "POST", body });
   },
+  getAdminAnalytics: (email: string) =>
+    request<AdminAnalytics>("/admin/analytics", {}, { email }),
+  getAdminMatches: (email: string, limit?: number) =>
+    request<AdminMatch[]>("/admin/matches", {}, { email, limit }),
 };
