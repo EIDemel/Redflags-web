@@ -1,0 +1,128 @@
+@import "tailwindcss";
+
+:root {
+  color: #242124;
+  background: #fffdfb;
+  font-family: Arial, Helvetica, sans-serif;
+  font-synthesis: none;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  min-width: 320px;
+  background: #fffdfb;
+}
+#root {
+  display: block;
+  width: 100%;
+  max-width: none;
+  min-height: 100vh;
+  margin: 0;
+  border: 0;
+  text-align: left;
+}
+button,
+input,
+textarea {
+  font: inherit;
+}
+button {
+  cursor: pointer;
+}
+
+/* Global palette: warm white, charcoal and red flag */
+.bg-slate-950 {
+  background-color: #fffdfb !important;
+}
+.bg-slate-900 {
+  background-color: #fff !important;
+}
+.bg-slate-50 {
+  background-color: #f8f8f8 !important;
+}
+.text-slate-100,
+.text-white {
+  color: #242124 !important;
+}
+.text-slate-400,
+.text-slate-500 {
+  color: #71818a !important;
+}
+.text-slate-300 {
+  color: #4c4749 !important;
+}
+.text-rose-400,
+.text-rose-500 {
+  color: #e9405c !important;
+}
+.bg-rose-500 {
+  background-color: #e9405c !important;
+}
+.bg-rose-600 {
+  background-color: #d72f4a !important;
+}
+.border-white\/10,
+.border-white\/15 {
+  border-color: #ded9d7 !important;
+}
+.border-slate-200 {
+  border-color: #d9d7d5 !important;
+}
+.bg-white\/10,
+.bg-white\/15 {
+  background-color: #f4f2f1 !important;
+}
+.bg-black\/70 {
+  background-color: rgba(36, 33, 36, 0.72) !important;
+}
+.hover\:bg-rose-400:hover {
+  background-color: #f0526b !important;
+}
+.hover\:text-white:hover {
+  color: #242124 !important;
+}
+.shadow-2xl,
+.shadow-lg {
+  box-shadow: 0 6px 0 rgba(48, 43, 45, 0.14) !important;
+}
+
+/* Light mobile application chrome */
+header.bg-slate-950,
+header[class*="bg-slate"] {
+  background: #f7f3f0 !important;
+  border-color: #eee7e3 !important;
+}
+nav a {
+  font-weight: 800;
+}
+input,
+textarea {
+  color: #242124 !important;
+  background: #fff !important;
+  border-color: #d9d7d5 !important;
+}
+input:focus,
+textarea:focus {
+  border-color: #e9405c !important;
+  outline-color: #e9405c !important;
+}
+button.bg-rose-500 {
+  box-shadow: 0 5px 0 #b9253e !important;
+}
+.rounded-3xl.bg-slate-900,
+.rounded-\[2rem\].bg-slate-900 {
+  border-color: #d9d7d5 !important;
+  box-shadow: 0 5px 0 rgba(48, 43, 45, 0.12) !important;
+}
+
+input:invalid:not(:placeholder-shown),
+textarea:invalid:not(:placeholder-shown) {
+  border-color: #e9405c !important;
+  background-color: #fff1f3 !important;
+  box-shadow: 0 0 0 2px rgba(233, 64, 92, 0.12);
+}
+
+input:focus:invalid,
+textarea:focus:invalid {
+  outline: 2px solid #e9405c !important;

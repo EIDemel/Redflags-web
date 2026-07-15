@@ -1,0 +1,7 @@
+--- Redflags-web/src/i18n.tsx
++++ Redflags-web/src/i18n.tsx
+@@ -50,3 +50,4 @@
+   Grey: "Gris / Poivre et sel",
+   Smoking: "Fumeur",
+ };
++const en: Record<string, string> = Object.fromEntries(Object.entries(fr).map(([key, value]) => [value, key]));

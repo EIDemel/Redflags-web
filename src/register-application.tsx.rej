@@ -1,0 +1,14 @@
+--- Redflags-web/src/register-application.tsx
++++ Redflags-web/src/register-application.tsx
+@@ -42,10 +42,10 @@
+             {connected && (
+               <button
+                 type="button"
+-            <LanguageSwitcher />
+                 onClick={disconnect}
+                 className="rounded-full border-2 border-rose-500 px-3 py-1 text-sm font-black text-rose-500"
+               >
+                 Disconnect
+               </button>
+             )}
++            <LanguageSwitcher />

@@ -1,0 +1,101 @@
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from "react";
+export type Language = "fr" | "en";
+const fr: Record<string, string> = {
+  Discover: "Decouvrir",
+  "My profile": "Mon profil",
+  Register: "Inscription",
+  Disconnect: "Deconnexion",
+  "Sign in": "Connexion",
+  "Signing in...": "Connexion...",
+  Password: "Mot de passe",
+  "Create an account": "Creer un compte",
+  Name: "Nom",
+  Age: "Age",
+  Gender: "Genre",
+  "Create account": "Creer mon compte",
+  "Find your match": "Trouve ton match",
+  Refresh: "Actualiser",
+  Close: "Fermer",
+  "Loading profiles...": "Chargement des profils...",
+  "No profile available.": "Aucun profil disponible.",
+  "Try again": "Reessayer",
+  Login: "Connexion",
+  "MY INFORMATION": "MES INFORMATIONS",
+  "YOUR PHOTOS": "TES PHOTOS",
+  "MY BIO": "MA BIO",
+  "MY RED FLAGS": "MES RED FLAGS",
+  "EXCLUDED GENDERS": "GENRES EXCLUS",
+  "EXCLUDED AGE RANGES": "TRANCHES D AGE EXCLUES",
+  "EXCLUDED HAIR COLORS": "COULEURS DE CHEVEUX EXCLUES",
+  "MAXIMUM DISTANCE": "DISTANCE MAXIMALE",
+  "EXCLUDED HABITS": "HABITUDES EXCLUES",
+  "STRICT MODE": "MODE STRICT",
+  "DANGER ZONE": "ZONE DE DANGER",
+  "DELETE MY ACCOUNT": "SUPPRIMER MON COMPTE",
+  "SAVE CHANGES": "SAUVEGARDER LES MODIFICATIONS",
+  Men: "Hommes",
+  Women: "Femmes",
+  "Non binary": "Non binaires",
+  Brunette: "Brunes / Bruns",
+  Blonde: "Blondes / Blonds",
+  Redhead: "Rousses / Roux",
+  Black: "Noirs / Bruns fonces",
+  Grey: "Gris / Poivre et sel",
+  Smoking: "Fumeur",
+};
+const en: Record<string, string> = Object.fromEntries(
+  Object.entries(fr).map(([key, value]) => [value, key]),
+);
+type Value = {
+  language: Language;
+  setLanguage: (v: Language) => void;
+  t: (key: string) => string;
+};
+const C = createContext<Value | null>(null);
+export function LanguageProvider({ children }: { children: ReactNode }) {
+  const [language, setState] = useState<Language>(() => {
+    const v = localStorage.getItem("redflags.language");
+    return v === "fr" || v === "en"
+      ? v
+      : navigator.language.startsWith("fr")
+        ? "fr"
+        : "en";
+  });
+  const setLanguage = (v: Language) => {
+    localStorage.setItem("redflags.language", v);
+    setState(v);
+  };
+  useEffect(() => {
+    const dictionary = language === "fr" ? fr : en;
+    const walk = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+    const nodes: Text[] = [];
+    while (walk.nextNode()) nodes.push(walk.currentNode as Text);
+    nodes.forEach((node) => {
+      const current = node.nodeValue ?? "";
+      const key = current.trim();
+      if (key && dictionary[key])
+        node.nodeValue = current.replace(key, dictionary[key]);
+    });
+  }, [language]);
+  const value = useMemo(
+    () => ({
+      language,
+      setLanguage,
+      t: (key: string) => (language === "fr" ? (fr[key] ?? key) : key),
+    }),
+    [language],
+  );
+  return <C.Provider value={value}>{children}</C.Provider>;
+}
+export function useLanguage() {
+  const value = useContext(C);
+  if (!value) throw new Error("Missing LanguageProvider");
+  return value;
+}

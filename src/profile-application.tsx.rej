@@ -1,0 +1,5 @@
+--- Redflags-web/src/profile-application.tsx
++++ Redflags-web/src/profile-application.tsx
+@@ -3 +3 @@
+-import { DiscoveryPage } from './pages/discovery-page'
++import { TinderDiscoveryPage as DiscoveryPage } from './pages/tinder-discovery-page'
