@@ -20,7 +20,7 @@ function Shell({ children }: { children: React.ReactNode }) {
     : [["/register", "Register"]];
   function disconnect() {
     authSession.clear();
-    window.location.assign("/");
+    window.location.assign(import.meta.env.BASE_URL);
   }
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100">
