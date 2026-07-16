@@ -45,7 +45,7 @@ jobs:
 
   deploy-preprod:
     needs: build
-    if: github.event_name == 'push' && github.ref == 'refs/heads/develop' && secrets.O2SWITCH_HOST != ''
+    if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
     runs-on: ubuntu-latest
     environment: preproduction
     steps:
@@ -65,7 +65,7 @@ jobs:
 
   deploy-production:
     needs: build
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && secrets.O2SWITCH_HOST != ''
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     environment: production
     steps:
