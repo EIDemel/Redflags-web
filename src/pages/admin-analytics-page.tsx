@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState, type FormEvent } from "react";
 import { useApi } from "../hooks/use-api";
 import { api } from "../services/api";
 import { authSession } from "../services/auth-session";
@@ -17,12 +17,18 @@ function StatCard({ label, value }: { label: string; value: string | number }) {
 export function AdminAnalyticsPage() {
     const email = authSession.getEmail(),
         analyticsApi = useApi(api.getAdminAnalytics),
-        matchesApi = useApi(api.getAdminMatches);
+        matchesApi = useApi(api.getAdminMatches),
+        redFlagsApi = useApi(api.getRedFlags),
+        createRedFlagApi = useApi(api.createRedFlag);
+
+    const [newRedFlagLabel, setNewRedFlagLabel] = useState(""),
+        [redFlagFeedback, setRedFlagFeedback] = useState<string | null>(null);
 
     const load = useCallback(() => {
         if (!email) return;
         void analyticsApi.execute(email);
         void matchesApi.execute(email);
+        void redFlagsApi.execute();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [email]);
 
@@ -32,8 +38,27 @@ export function AdminAnalyticsPage() {
 
     const analytics = analyticsApi.data,
         matches = matchesApi.data ?? [],
+        redFlags = redFlagsApi.data ?? [],
         error = analyticsApi.error ?? matchesApi.error,
         loading = analyticsApi.isLoading || matchesApi.isLoading;
+
+    const handleCreateRedFlag = useCallback(
+        async (event: FormEvent) => {
+            event.preventDefault();
+            setRedFlagFeedback(null);
+            const label = newRedFlagLabel.trim();
+            if (!label) return;
+            try {
+                await createRedFlagApi.execute(label);
+                setNewRedFlagLabel("");
+                setRedFlagFeedback(`"${label}" added to the catalogue.`);
+                void redFlagsApi.execute();
+            } catch {
+                // error is already exposed via createRedFlagApi.error
+            }
+        },
+        [newRedFlagLabel, createRedFlagApi, redFlagsApi],
+    );
 
     if (!email)
         return <p className="text-center text-slate-400">Sign in first.</p>;
@@ -56,6 +81,7 @@ export function AdminAnalyticsPage() {
                     Refresh
                 </button>
             </div>
+
 
             {error && <p className="mb-4 text-rose-300">{error}</p>}
 
@@ -125,6 +151,62 @@ export function AdminAnalyticsPage() {
                 ) : (
                     <p className="mt-4 rounded-3xl border border-dashed border-white/15 p-10 text-center text-slate-400">
                         No matches yet.
+                    </p>
+                )}
+            </div>
+
+            <div className="mt-10">
+                <h2 className="text-xl font-black">Red flags catalogue</h2>
+                <p className="mt-1 text-sm text-slate-400">
+                    Add new red flags so users can pick them on their profile.
+                </p>
+
+                <form
+                    onSubmit={handleCreateRedFlag}
+                    className="mt-4 flex flex-col gap-3 sm:flex-row"
+                >
+                    <input
+                        type="text"
+                        value={newRedFlagLabel}
+                        onChange={(e) => setNewRedFlagLabel(e.target.value)}
+                        placeholder="e.g. Leaves you on read"
+                        maxLength={80}
+                        className="flex-1 rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-sm text-white placeholder:text-slate-500"
+                    />
+                    <button
+                        type="submit"
+                        disabled={createRedFlagApi.isLoading || !newRedFlagLabel.trim()}
+                        className="rounded-2xl bg-rose-500 px-6 py-3 text-sm font-bold text-white disabled:opacity-50"
+                    >
+                        {createRedFlagApi.isLoading ? "Adding..." : "Add red flag"}
+                    </button>
+                </form>
+
+                {createRedFlagApi.error && (
+                    <p className="mt-3 text-rose-300">{createRedFlagApi.error}</p>
+                )}
+                {!createRedFlagApi.error && redFlagFeedback && (
+                    <p className="mt-3 text-emerald-400">{redFlagFeedback}</p>
+                )}
+
+                {redFlagsApi.isLoading && !redFlagsApi.data ? (
+                    <p className="mt-4 text-slate-400">Loading catalogue...</p>
+                ) : redFlagsApi.error ? (
+                    <p className="mt-4 text-rose-300">{redFlagsApi.error}</p>
+                ) : redFlags.length ? (
+                    <div className="mt-4 flex flex-wrap gap-3">
+                        {redFlags.map((flag) => (
+                            <span
+                                key={flag.id}
+                                className="rounded-full border border-white/10 bg-slate-900 px-4 py-2 text-sm font-bold"
+                            >
+                                {flag.label}
+                            </span>
+                        ))}
+                    </div>
+                ) : (
+                    <p className="mt-4 rounded-3xl border border-dashed border-white/15 p-10 text-center text-slate-400">
+                        No red flags yet.
                     </p>
                 )}
             </div>

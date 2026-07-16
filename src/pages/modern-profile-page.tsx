@@ -2,6 +2,7 @@ import { useEffect, useState, type ChangeEvent, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { request } from "../services/http-client";
 import { authSession } from "../services/auth-session";
+import { api } from "../services/api";
 import {
   profileService,
   type ProfileUpdate,
@@ -42,12 +43,7 @@ const hairs: [string, string][] = [
   ["black", "Black"],
   ["grey", "Grey"],
 ];
-const habits: [string, string][] = [
-  ["pineapple_pizza", "Pineapple pizza"],
-  ["late_sleeper", "Late sleeper"],
-  ["loud_chewing", "Loud chewing"],
-  ["smoking", "Smoking"],
-];
+
 function Chips({
   items,
   value,
@@ -124,8 +120,15 @@ export function ModernProfilePage() {
     [loading, setLoading] = useState(true),
     [saving, setSaving] = useState(false),
     [uploading, setUploading] = useState(false),
+    [habits, setHabits] = useState<[string, string][]>([]),
     [error, setError] = useState<string | null>(null),
     [notice, setNotice] = useState<string | null>(null);
+  useEffect(() => {
+    void api
+      .getRedFlags()
+      .then((flags) => setHabits(flags.map((flag) => [flag.key, flag.label])))
+      .catch(() => setHabits([]));
+  }, []);
   useEffect(() => {
     if (!email) return;
     void profileService

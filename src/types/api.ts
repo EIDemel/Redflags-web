@@ -75,3 +75,8 @@ export interface AdminMatch {
   matchedAt: string;
   messageCount?: number;
 }
+export interface RedFlag {
+  id: string;
+  key: string;
+  label: string;
+}

@@ -1,4 +1,4 @@
-import type { Message, Profile, ProfilesQuery, User, AdminAnalytics, AdminMatch } from "../types/api";
+import type { Message, Profile, ProfilesQuery, User, AdminAnalytics, AdminMatch, RedFlag } from "../types/api";
 import { request } from "./http-client";
 export const api = {
   health: () => request<string>("/"),
@@ -58,4 +58,10 @@ export const api = {
     request<AdminAnalytics>("/admin/analytics", {}, { email }),
   getAdminMatches: (email: string, limit?: number) =>
     request<AdminMatch[]>("/admin/matches", {}, { email, limit }),
+  getRedFlags: () => request<RedFlag[]>("/profiles/red-flags"),
+  createRedFlag: (label: string, key?: string) =>
+    request<RedFlag>("/profiles/red-flags", {
+      method: "POST",
+      body: { label, key },
+    }),
 };
