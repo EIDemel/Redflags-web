@@ -231,12 +231,13 @@ export function ModernProfilePage() {
               onChange={(e) => update({ age: Number(e.target.value) })}
               className="rounded-2xl border-2 p-3 font-bold"
             />
-            <input
+            <select
               value={form.gender}
               onChange={(e) => update({ gender: e.target.value })}
-              className="rounded-2xl border-2 p-3 font-bold"
-              placeholder="Gender"
-            />
+              className="rounded-2xl border-2 p-3 font-bold">
+              <option value="male">Homme</option>
+              <option value="female">Femme</option>
+            </select>
           </div>
         </section>
         <section>

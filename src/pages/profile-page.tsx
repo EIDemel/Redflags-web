@@ -142,12 +142,14 @@ export function ProfilePage() {
           </label>
           <label>
             Gender
-            <input
+            <select
               required
               value={user.gender}
               onChange={(e) => update("gender", e.target.value)}
-              className="mt-2 w-full rounded-xl border border-white/15 bg-slate-950 p-3"
-            />
+              className="mt-2 w-full rounded-xl border border-white/15 bg-slate-950 p-3">
+              <option value="male">Homme</option>
+              <option value="female">Femme</option>
+            </select>
           </label>
           <label className="sm:col-span-2">
             Bio

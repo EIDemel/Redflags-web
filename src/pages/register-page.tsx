@@ -79,12 +79,18 @@ export function RegisterPage() {
           </label>
           <label>
             Gender
-            <input
+            <select
               required
               value={gender}
               onChange={(event) => setGender(event.target.value)}
               className="mt-2 w-full rounded-xl border border-white/15 bg-slate-950 p-3"
-            />
+            >
+              <option value="" disabled>
+                Choisir un genre
+              </option>
+              <option value="male">Homme</option>
+              <option value="female">Femme</option>
+            </select>
           </label>
         </div>
         <label className="block">
