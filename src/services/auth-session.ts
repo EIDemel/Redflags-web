@@ -5,6 +5,10 @@ const userKey = "redflags.userEmail";
 const accessKey = "redflags.accessToken";
 const refreshKey = "redflags.refreshToken";
 const roleKey = "redflags.userRole";
+const configuredAdminEmails = String(import.meta.env.VITE_ADMIN_EMAILS ?? "")
+  .split(",")
+  .map((email) => email.trim().toLowerCase())
+  .filter(Boolean);
 
 type LoginResponse = User & {
   accessToken?: string;
@@ -26,13 +30,19 @@ function access(response: RefreshResponse) {
 function refresh(response: RefreshResponse) {
   return response.refreshToken ?? response.refresh_token;
 }
+function isConfiguredAdmin(email: string) {
+  return configuredAdminEmails.includes(email.trim().toLowerCase());
+}
 
 export const authSession = {
   saveLogin(response: LoginResponse) {
     const user = response.user ?? response;
     localStorage.setItem(userKey, user.email);
-    if (user.role) localStorage.setItem(roleKey, user.role);
-    else localStorage.removeItem(roleKey);
+    if (user.role === "admin" || isConfiguredAdmin(user.email)) {
+      localStorage.setItem(roleKey, "admin");
+    } else {
+      localStorage.removeItem(roleKey);
+    }
     const token = access(response),
       renewal = refresh(response);
     if (token) localStorage.setItem(accessKey, token);
