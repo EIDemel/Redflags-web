@@ -9,6 +9,7 @@ import {
 export type Language = "fr" | "en";
 const fr: Record<string, string> = {
   Discover: "Decouvrir",
+  Analytics: "Statistiques",
   "My profile": "Mon profil",
   Register: "Inscription",
   Disconnect: "Deconnexion",

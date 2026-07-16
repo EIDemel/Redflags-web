@@ -1,8 +1,9 @@
 import { Link, Route, Routes, useLocation } from "react-router-dom";
-import { ProtectedRoute } from "./components/protected-route";
+import { ProtectedRoute, AdminRoute } from "./components/protected-route";
 import { AuthLoginPage } from "./pages/auth-login-page";
 import { TinderDiscoveryPage as DiscoveryPage } from "./pages/tinder-discovery-page";
 import { ModernProfilePage as ProfilePage } from "./pages/modern-profile-page";
+import { AdminAnalyticsPage } from "./pages/admin-analytics-page";
 import { LanguageSwitcher } from "./components/language-switcher";
 import { authSession } from "./services/auth-session";
 import { useLanguage } from "./i18n";
@@ -12,11 +13,12 @@ function Shell({ children }: { children: React.ReactNode }) {
   const location = useLocation();
   const { t } = useLanguage();
   const connected = authSession.isAuthenticated();
+  const isAdmin = connected && authSession.isAdmin();
   const links = connected
     ? [
-        ["/discover", "Discover"],
-        ["/profile", "My profile"],
-      ]
+      ["/discover", "Discover"],
+      ["/profile", "My profile"],
+    ]
     : [["/register", "Register"]];
   function disconnect() {
     authSession.clear();
@@ -30,6 +32,19 @@ function Shell({ children }: { children: React.ReactNode }) {
             redflags.
           </Link>
           <div className="flex items-center gap-4">
+            {isAdmin && (
+              <Link
+                to="/admin"
+                className={
+                  "rounded-full border-2 px-3 py-1 text-sm font-black " +
+                  (location.pathname === "/admin"
+                    ? "border-rose-400 bg-rose-400 text-slate-950"
+                    : "border-rose-400 text-rose-400")
+                }
+              >
+                {t("Analytics")}
+              </Link>
+            )}
             {links.map(([to, label]) => (
               <Link
                 key={to}
@@ -78,6 +93,14 @@ export default function App() {
             <ProtectedRoute>
               <ProfilePage />
             </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin"
+          element={
+            <AdminRoute>
+              <AdminAnalyticsPage />
+            </AdminRoute>
           }
         />
         <Route
