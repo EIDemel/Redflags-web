@@ -54,11 +54,20 @@ jobs:
           name: web-dist
           path: dist
       - name: Configure SSH
+        env:
+          O2SWITCH_HOST: ${{ secrets.O2SWITCH_HOST }}
+          O2SWITCH_SSH_KEY: ${{ secrets.O2SWITCH_SSH_KEY }}
         run: |
-          mkdir -p ~/.ssh
-          printf '%s' "${{ secrets.O2SWITCH_SSH_KEY }}" > ~/.ssh/id_ed25519
+          set -euo pipefail
+          test -n "$O2SWITCH_HOST" || { echo "::error::Le secret O2SWITCH_HOST est manquant."; exit 1; }
+          test -n "$O2SWITCH_SSH_KEY" || { echo "::error::Le secret O2SWITCH_SSH_KEY est manquant."; exit 1; }
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$O2SWITCH_SSH_KEY" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
-          ssh-keyscan -H "${{ secrets.O2SWITCH_HOST }}" >> ~/.ssh/known_hosts
+          if ! ssh-keyscan -T 10 -H "$O2SWITCH_HOST" >> ~/.ssh/known_hosts 2>/dev/null; then
+            echo "::error::Impossible de joindre $O2SWITCH_HOST en SSH (port 22). Vérifiez l’accès SSH O2Switch et le nom d’hôte."
+            exit 1
+          fi
       - name: Deploy preproduction
         run: |
           rsync -az --delete -e "ssh -i ~/.ssh/id_ed25519" ./dist/ "${{ secrets.O2SWITCH_USER }}@${{ secrets.O2SWITCH_HOST }}:${{ secrets.O2SWITCH_TARGET_PATH_PREPROD }}"
