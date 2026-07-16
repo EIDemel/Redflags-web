@@ -24,13 +24,24 @@ export function TinderDiscoveryPage() {
             )
           : resolve(null),
       );
-      const result = await loadProfiles({
+      const query = {
         email,
         limit: 20,
         latitude: pos?.coords.latitude,
         longitude: pos?.coords.longitude,
+      };
+      const result = await loadProfiles(query);
+
+      if (result.length > 0 || !pos) {
+        setProfiles(result);
+        return;
+      }
+
+      const expandedResult = await loadProfiles({
+        ...query,
+        maxDistance: 20_000,
       });
-      setProfiles(result);
+      setProfiles(expandedResult);
     } catch {}
   }, [email, loadProfiles]);
   useEffect(() => {
