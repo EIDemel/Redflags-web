@@ -101,6 +101,7 @@ export function TinderDiscoveryPage() {
         <p className="text-center text-slate-400">Loading profiles...</p>
       ) : profiles[0] ? (
         <TinderCard
+          key={profiles[0].id}
           profile={profiles[0]}
           onSwipe={swipe}
           busy={swipeApi.isLoading}
