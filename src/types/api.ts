@@ -51,17 +51,47 @@ export interface Message {
   mediaUrl?: string;
   createdAt?: string;
 }
-export interface AdminAnalytics {
+export interface AcquisitionStats {
   totalUsers: number;
-  totalMatches: number;
+  newUsersLast7Days: number;
+  newUsersThisWeek: number;
+}
+export interface ActivationStats {
+  totalProfiles: number;
+  completedProfiles: number;
+  profilesWithPhotos: number;
+  completionRate: number;
+}
+export interface EngagementStats {
   totalSwipes: number;
   totalLikes: number;
   totalDislikes: number;
-  matchRate: number;
-  totalMessages: number;
-  totalReports: number;
-  newUsersLast7Days: number;
+  profilesViewed: number;
   activeUsersLast7Days: number;
+}
+export interface QualityStats {
+  totalReports: number;
+  totalBlocks: number;
+  totalModerationActions: number;
+}
+export interface ConversionStats {
+  totalMatches: number;
+  matchRate: number;
+}
+export interface TechnicalStats {
+  totalRequests: number;
+  totalErrors: number;
+  errorRate: number;
+  avgResponseTimeMs: number;
+  uptimeSeconds: number;
+}
+export interface AdminAnalytics {
+  acquisition: AcquisitionStats;
+  activation: ActivationStats;
+  engagement: EngagementStats;
+  quality: QualityStats;
+  conversion: ConversionStats;
+  technical: TechnicalStats;
 }
 export interface AdminMatchUser {
   id: string;

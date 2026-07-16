@@ -14,6 +14,26 @@ function StatCard({ label, value }: { label: string; value: string | number }) {
     );
 }
 
+function StatCategory({
+    title,
+    subtitle,
+    children,
+}: {
+    title: string;
+    subtitle: string;
+    children: React.ReactNode;
+}) {
+    return (
+        <div className="mt-10">
+            <h2 className="text-xl font-black text-rose-400">{title}</h2>
+            <p className="mt-1 text-sm text-slate-400">{subtitle}</p>
+            <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {children}
+            </div>
+        </div>
+    );
+}
+
 export function AdminAnalyticsPage() {
     const email = authSession.getEmail(),
         analyticsApi = useApi(api.getAdminAnalytics),
@@ -88,25 +108,136 @@ export function AdminAnalyticsPage() {
             {analyticsApi.isLoading && !analytics ? (
                 <p className="text-slate-400">Loading analytics...</p>
             ) : analytics ? (
-                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                    <StatCard label="Total users" value={analytics.totalUsers} />
-                    <StatCard label="Total matches" value={analytics.totalMatches} />
-                    <StatCard label="Total swipes" value={analytics.totalSwipes} />
-                    <StatCard
-                        label="Match rate"
-                        value={(analytics.matchRate * 100).toFixed(1) + "%"}
-                    />
-                    <StatCard label="Total messages" value={analytics.totalMessages} />
-                    <StatCard label="Total reports" value={analytics.totalReports} />
-                    <StatCard
-                        label="New users (7d)"
-                        value={analytics.newUsersLast7Days}
-                    />
-                    <StatCard
-                        label="Active users (7d)"
-                        value={analytics.activeUsersLast7Days}
-                    />
-                </div>
+                <>
+                    <StatCategory
+                        title="Acquisition"
+                        subtitle="Comptes créés / semaine"
+                    >
+                        <StatCard
+                            label="Total users"
+                            value={analytics.acquisition.totalUsers}
+                        />
+                        <StatCard
+                            label="New users (7d)"
+                            value={analytics.acquisition.newUsersLast7Days}
+                        />
+                        <StatCard
+                            label="New users this week"
+                            value={analytics.acquisition.newUsersThisWeek}
+                        />
+                    </StatCategory>
+
+                    <StatCategory
+                        title="Activation"
+                        subtitle="Profil complété et premières photos"
+                    >
+                        <StatCard
+                            label="Total profiles"
+                            value={analytics.activation.totalProfiles}
+                        />
+                        <StatCard
+                            label="Completed profiles"
+                            value={analytics.activation.completedProfiles}
+                        />
+                        <StatCard
+                            label="Profiles with photos"
+                            value={analytics.activation.profilesWithPhotos}
+                        />
+                        <StatCard
+                            label="Completion rate"
+                            value={(analytics.activation.completionRate * 100).toFixed(1) + "%"}
+                        />
+                    </StatCategory>
+
+                    <StatCategory
+                        title="Engagement"
+                        subtitle="Swipes, profils consultés, sessions"
+                    >
+                        <StatCard
+                            label="Total swipes"
+                            value={analytics.engagement.totalSwipes}
+                        />
+                        <StatCard
+                            label="Total likes"
+                            value={analytics.engagement.totalLikes}
+                        />
+                        <StatCard
+                            label="Total dislikes"
+                            value={analytics.engagement.totalDislikes}
+                        />
+                        <StatCard
+                            label="Profiles viewed"
+                            value={analytics.engagement.profilesViewed}
+                        />
+                        <StatCard
+                            label="Active users (7d)"
+                            value={analytics.engagement.activeUsersLast7Days}
+                        />
+                    </StatCategory>
+
+                    <StatCategory
+                        title="Qualité"
+                        subtitle="Signalements, blocages, modération"
+                    >
+                        <StatCard
+                            label="Total reports"
+                            value={analytics.quality.totalReports}
+                        />
+                        <StatCard
+                            label="Total blocks"
+                            value={analytics.quality.totalBlocks}
+                        />
+                        <StatCard
+                            label="Moderation actions"
+                            value={analytics.quality.totalModerationActions}
+                        />
+                    </StatCategory>
+
+                    <StatCategory
+                        title="Conversion"
+                        subtitle="Likes réciproques et matchs"
+                    >
+                        <StatCard
+                            label="Total matches"
+                            value={analytics.conversion.totalMatches}
+                        />
+                        <StatCard
+                            label="Match rate"
+                            value={(analytics.conversion.matchRate * 100).toFixed(1) + "%"}
+                        />
+                    </StatCategory>
+
+                    <StatCategory
+                        title="Technique"
+                        subtitle="Erreurs API, temps de réponse, disponibilité"
+                    >
+                        <StatCard
+                            label="Total requests"
+                            value={analytics.technical.totalRequests}
+                        />
+                        <StatCard
+                            label="Total errors"
+                            value={analytics.technical.totalErrors}
+                        />
+                        <StatCard
+                            label="Error rate"
+                            value={(analytics.technical.errorRate * 100).toFixed(1) + "%"}
+                        />
+                        <StatCard
+                            label="Avg response time"
+                            value={analytics.technical.avgResponseTimeMs + " ms"}
+                        />
+                        <StatCard
+                            label="Uptime"
+                            value={Math.round(analytics.technical.uptimeSeconds / 60) + " min"}
+                        />
+                    </StatCategory>
+
+                    <p className="mt-10 text-center text-sm text-slate-500">
+                        Objectif : décider à partir des usages, tout en respectant la
+                        minimisation des données.
+                    </p>
+                </>
             ) : null}
 
             <div className="mt-10">
